@@ -1,0 +1,36 @@
+from util.ExcelUtil import *
+from config.ProjVar import *
+from data.data import *
+from action.Reset import clear_cells
+from openpyxl import Workbook
+
+"""
+'data':{}
+'data':[{k1:v1,k2:v2]},{k3:v3,k4:v4}]
+'data':{k1:v2,k2:v2}
+'data':{k0:[{k1:v1,k2:v2},{k3:v3,k4:v4}]}
+"""
+
+if not os.path.exists(excel_path):
+    wb = Workbook()
+    wb.save(excel_path)
+
+
+excel = ParseExcel(excel_path)
+clear_cells(excel)
+
+
+for k,v in response.items():
+    if  k == "data":
+        if isinstance(response[k],dict):
+            for item, value in response[k].items():
+                row = 1
+                for i in response[k][item]:
+                    for col,ev in enumerate(i.values()):
+                        # print(row,col+1,ev)
+                        excel.write_cell(row,col+1,ev)
+                    row += 1
+        elif isinstance(response[k],list):
+            for d in response[k]:
+                print(d)
+
